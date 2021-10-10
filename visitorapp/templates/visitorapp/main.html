@@ -1,0 +1,131 @@
+{% load static %}
+
+<main class="container">
+    <!-- Banks and profits -->
+    {% include 'visitorapp/bank_profit.html' %}
+    <!---->
+    <!-- Trades completed -->
+    {% if not trades %}
+            <p class="text-center">No trade completed</p>
+    {% else %}
+    <div class="text-center">
+        <span id="number-trades">{{ completed_trades }}</span> Trades completed<br>
+    </div>
+    <div id="completed-trades" class="row text-center">
+        {% for trade in trades %}
+            <div class="col-md-6 mx-auto">
+                <div class="card border-dark">
+                    <div class="card-header bg-success">
+                        Open: {{ trade.open_date }} - Close: {{ trade.closed_date }}
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive-sm text-center">
+                            <table class="table">
+                                <caption>Fee: {{ trade.fee }} BNB</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Market</th>
+                                        <th scope="col">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ trade.order_one.market.symbol }}</td>
+                                        <td>{{ trade.order_one.side }} {{ trade.order_one.quantity }} at {{ trade.order_one.price }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ trade.order_two.market.symbol }}</td>
+                                        <td>{{ trade.order_two.side }} {{ trade.order_two.quantity }} at {{ trade.order_two.price }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ trade.order_three.market.symbol }}</td>
+                                        <td>{{ trade.order_three.side }} {{ trade.order_three.quantity }} at {{ trade.order_three.price }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% if paginate %}
+            <nav class="col-md-10 mx-auto" aria-label="...">
+                <div class="row">
+                    {% if trades.has_previous %}
+                        <a class="pag_link btn btn-dark col-4 col-md-3 col-lg-2 mx-auto my-auto text-center" href="?page={{ trades.previous_page_number }}" style="color: white">&larr; Previous</a>
+                    {% endif %}
+                    {% if trades.has_next %}
+                        <a class="pag_link btn btn-dark col-4 col-md-3 col-lg-2 mx-auto my-auto text-center" href="?page={{ trades.next_page_number }}" style="color: white">Next &rarr;</a>
+                    {% endif %}
+                </div>
+            </nav>
+        {% endif %}
+        {% endif %}
+    </div>
+    <!---->
+    <!-- Trade in progress -->
+    {% if open_trade.count != 0 %}
+        <span class="text-danger">Trade in progress:</span> open {{ open_trade.0.open_date }}
+        <div class="table-responsive-sm text-center">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Market</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if open_trade.0.order_one.is_completed %}
+                        <tr class="bg-success">
+                    {% else %}
+                        <tr class="bg-danger">
+                    {% endif %}
+                        <td>{{ open_trade.0.order_one.market.symbol }}</td>
+                        <td>{{ open_trade.0.order_one.side }} {{ open_trade.0.order_one.quantity }} at {{ open_trade.0.order_one.price }}</td>
+                        {% if open_trade.0.order_one.is_completed %}
+                            <td>Completed</td>
+                        {% else %}
+                            <td>Not completed</td>
+                        {% endif %}
+                    </tr>
+                    {% if open_trade.0.order_two.is_completed %}
+                        <tr class="bg-success">
+                    {% else %}
+                        <tr class="bg-danger">
+                    {% endif %}
+                        <td>{{ open_trade.0.order_two.market.symbol }}</td>
+                        <td>{{ open_trade.0.order_two.side }} {{ open_trade.0.order_two.quantity }} at {{ open_trade.0.order_two.price }}</td>
+                        {% if open_trade.0.order_two.is_completed %}
+                            <td>Completed</td>
+                        {% else %}
+                            <td>Not completed</td>
+                        {% endif %}
+                    </tr>
+                    {% if open_trade.0.order_three.is_completed %}
+                        <tr class="bg-success">
+                    {% else %}
+                        <tr class="bg-danger">
+                    {% endif %}
+                        <td>{{ open_trade.0.order_three.market.symbol }}</td>
+                        <td>{{ open_trade.0.order_three.side }} {{ open_trade.0.order_three.quantity }} at {{ open_trade.0.order_three.price }}</td>
+                        {% if open_trade.0.order_three.is_completed %}
+                            <td>Completed</td>
+                        {% else %}
+                            <td>Not completed</td>
+                        {% endif %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    <div class="row text-center">
+        <div class="col-6">
+            <a href="{% url 'index' %}" class="btn btn-outline-primary" role="button">Reload Page</a>
+        </div>
+        <div class="col-6">
+            <a href="https://codester.com/jullie" class="btn btn-outline-success" role="button" onclick="window.open(this.href); return false;">Buy Now</a>
+        </div>
+    </div>
+    <!---->
+</main>
